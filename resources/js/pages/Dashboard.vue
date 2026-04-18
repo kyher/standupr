@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
+import { Form, Head } from '@inertiajs/vue3';
+import StoreTeamController from '@/actions/App/Http/Controllers/Teams/StoreTeamController';
+import InputError from '@/components/InputError.vue';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { dashboard } from '@/routes';
+import type { Team } from '@/types';
+
+type Props = {
+    teams: Team[];
+};
+
+defineProps<Props>();
 
 defineOptions({
     layout: {
@@ -19,29 +31,35 @@ defineOptions({
     <Head title="Dashboard" />
 
     <div
-        class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4"
     >
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-        </div>
-        <div
-            class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
+        <Form
+            :action="StoreTeamController.url()"
+            method="post"
+            class="space-y-4"
+            v-slot="{ errors, processing }"
+            reset-on-success
         >
-            <PlaceholderPattern />
+            <div class="grid gap-2">
+                <Label for="name">Team name</Label>
+                <Input id="name" name="name" placeholder="Team name" required />
+                <InputError :message="errors.name" />
+            </div>
+
+            <Button :disabled="processing">Create team</Button>
+        </Form>
+
+        <div class="grid gap-4 md:grid-cols-3">
+            <Card v-for="team in teams" :key="team.id" class="gap-2">
+                <CardHeader>
+                    <CardTitle>{{ team.name }}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p class="text-sm text-muted-foreground">
+                        Your role: {{ team.role }}
+                    </p>
+                </CardContent>
+            </Card>
         </div>
     </div>
 </template>
