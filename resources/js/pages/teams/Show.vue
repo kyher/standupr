@@ -4,14 +4,12 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { Team } from '@/types';
 
-type Props = {
+defineProps<{
     team: Team;
-};
-
-const props = defineProps<Props>();
+}>();
 
 defineOptions({
-    layout: (props: Props) => [
+    layout: (props: { team: Team }) => [
         AppLayout,
         {
             breadcrumbs: [

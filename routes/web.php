@@ -17,4 +17,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('teams/{team}', ShowTeamController::class)->name('teams.show');
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
