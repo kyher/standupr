@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
+import { Form, Head, Link } from '@inertiajs/vue3';
+import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 import StoreTeamController from '@/actions/App/Http/Controllers/Teams/StoreTeamController';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -50,16 +51,18 @@ defineOptions({
         </Form>
 
         <div class="grid gap-4 md:grid-cols-3">
-            <Card v-for="team in teams" :key="team.id" class="gap-2">
-                <CardHeader>
-                    <CardTitle>{{ team.name }}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p class="text-sm text-muted-foreground">
-                        Your role: {{ team.role }}
-                    </p>
-                </CardContent>
-            </Card>
+            <Link v-for="team in teams" :key="team.id" :href="ShowTeamController.url(team)">
+                <Card class="gap-2">
+                    <CardHeader>
+                        <CardTitle>{{ team.name }}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p class="text-sm text-muted-foreground">
+                            Your role: {{ team.role }}
+                        </p>
+                    </CardContent>
+                </Card>
+            </Link>
         </div>
     </div>
 </template>
