@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Teams\DestroyTeamController;
 use App\Http\Controllers\Teams\ShowTeamController;
 use App\Http\Controllers\Teams\StoreTeamController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('teams', StoreTeamController::class)->name('teams.store');
     Route::get('teams/{team}', ShowTeamController::class)->name('teams.show');
+    Route::delete('teams/{team}', DestroyTeamController::class)->name('teams.destroy');
 });
 
 require __DIR__.'/settings.php';
