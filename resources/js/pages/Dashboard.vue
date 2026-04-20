@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
+import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 import StoreTeamController from '@/actions/App/Http/Controllers/Teams/StoreTeamController';
 import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button, buttonVariants } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { dashboard } from '@/routes';
@@ -51,18 +58,38 @@ defineOptions({
         </Form>
 
         <div class="grid gap-4 md:grid-cols-3">
-            <Link v-for="team in teams" :key="team.id" :href="ShowTeamController.url(team)">
-                <Card class="gap-2">
-                    <CardHeader>
-                        <CardTitle>{{ team.name }}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p class="text-sm text-muted-foreground">
-                            Your role: {{ team.role }}
-                        </p>
-                    </CardContent>
-                </Card>
-            </Link>
+            <Card v-for="team in teams" :key="team.id" class="gap-2">
+                <CardHeader>
+                    <CardTitle>{{ team.name }}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p class="text-sm text-muted-foreground">
+                        Your role: {{ team.role }}
+                    </p>
+                </CardContent>
+                <CardFooter class="gap-2">
+                    <Link
+                        :href="ShowTeamController.url(team)"
+                        :class="buttonVariants({ variant: 'link', size: 'sm' })"
+                    >
+                        View
+                    </Link>
+                    <Form
+                        v-if="team.role === 'admin'"
+                        v-bind="DestroyTeamController.form.delete(team)"
+                        v-slot="{ processing }"
+                    >
+                        <Button
+                            type="submit"
+                            variant="destructive"
+                            size="sm"
+                            :disabled="processing"
+                        >
+                            Delete
+                        </Button>
+                    </Form>
+                </CardFooter>
+            </Card>
         </div>
     </div>
 </template>
