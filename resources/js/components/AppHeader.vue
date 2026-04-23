@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { LayoutGrid, Menu } from 'lucide-vue-next';
+import { LayoutGrid, Menu, Moon, Sun } from 'lucide-vue-next';
 import { computed } from 'vue';
+import { useAppearance } from '@/composables/useAppearance';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
@@ -42,6 +43,11 @@ const props = withDefaults(defineProps<Props>(), {
 const page = usePage();
 const auth = computed(() => page.props.auth);
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
+const { resolvedAppearance, updateAppearance } = useAppearance();
+
+function toggleAppearance() {
+    updateAppearance(resolvedAppearance.value === 'dark' ? 'light' : 'dark');
+}
 
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
@@ -152,6 +158,16 @@ const mainNavItems: NavItem[] = [
                 </div>
 
                 <div class="ml-auto flex items-center space-x-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        class="h-9 w-9"
+                        @click="toggleAppearance"
+                        :aria-label="resolvedAppearance === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+                    >
+                        <Sun v-if="resolvedAppearance === 'dark'" class="h-4 w-4" />
+                        <Moon v-else class="h-4 w-4" />
+                    </Button>
                     <DropdownMenu>
                         <DropdownMenuTrigger :as-child="true">
                             <Button
