@@ -3,6 +3,7 @@ import { Form, Head, Link } from '@inertiajs/vue3';
 import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 import StoreTeamController from '@/actions/App/Http/Controllers/Teams/StoreTeamController';
+import EditTeamModal from '@/components/EditTeamModal.vue';
 import InputError from '@/components/InputError.vue';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
@@ -74,20 +75,24 @@ defineOptions({
                     >
                         View
                     </Link>
-                    <Form
-                        v-if="team.role === 'admin'"
-                        v-bind="DestroyTeamController.form.delete(team)"
-                        v-slot="{ processing }"
-                    >
-                        <Button
-                            type="submit"
-                            variant="destructive"
-                            size="sm"
-                            :disabled="processing"
+                    <template v-if="team.role === 'admin'">
+                        <EditTeamModal :team="team">
+                            <Button variant="outline" size="sm">Edit</Button>
+                        </EditTeamModal>
+                        <Form
+                            v-bind="DestroyTeamController.form.delete(team)"
+                            v-slot="{ processing }"
                         >
-                            Delete
-                        </Button>
-                    </Form>
+                            <Button
+                                type="submit"
+                                variant="destructive"
+                                size="sm"
+                                :disabled="processing"
+                            >
+                                Delete
+                            </Button>
+                        </Form>
+                    </template>
                 </CardFooter>
             </Card>
         </div>

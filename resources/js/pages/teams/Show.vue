@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
 import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
+import EditTeamModal from '@/components/EditTeamModal.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
@@ -36,7 +37,10 @@ defineOptions({
     >
         <h1 class="text-2xl font-semibold">{{ team.name }}</h1>
         <p class="text-sm text-muted-foreground">Your role: {{ team.role }}</p>
-        <div v-if="team.role === 'admin'">
+        <div v-if="team.role === 'admin'" class="flex gap-2">
+            <EditTeamModal :team="team">
+                <Button variant="outline">Edit team</Button>
+            </EditTeamModal>
             <Form
                 v-bind="DestroyTeamController.form.delete(team)"
                 v-slot="{ processing }"
