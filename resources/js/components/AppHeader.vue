@@ -2,7 +2,6 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { LayoutGrid, Menu, Moon, Sun } from 'lucide-vue-next';
 import { computed } from 'vue';
-import { useAppearance } from '@/composables/useAppearance';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
@@ -27,6 +26,7 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import UserMenuContent from '@/components/UserMenuContent.vue';
+import { useAppearance } from '@/composables/useAppearance';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { dashboard } from '@/routes';
