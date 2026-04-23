@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class DestroyTeamController extends Controller
 {
@@ -15,6 +16,8 @@ class DestroyTeamController extends Controller
         Gate::authorize('delete', $team);
 
         $action->handle($team);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Team deleted.')]);
 
         return redirect()->route('dashboard');
     }
