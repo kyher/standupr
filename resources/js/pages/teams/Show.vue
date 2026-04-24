@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
+import { Form, Head, Link } from '@inertiajs/vue3';
+import StoreStandupController from '@/actions/App/Http/Controllers/Standups/StoreStandupController';
+import ShowStandupController from '@/actions/App/Http/Controllers/Standups/ShowStandupController';
 import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
 import EditTeamModal from '@/components/EditTeamModal.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { Team } from '@/types';
+import type { Standup, Team } from '@/types';
 
 defineProps<{
     team: Team;
+    today_standup: Standup | null;
+    previous_standups: Standup[];
 }>();
 
 defineOptions({
@@ -37,6 +41,7 @@ defineOptions({
     >
         <h1 class="text-2xl font-semibold">{{ team.name }}</h1>
         <p class="text-sm text-muted-foreground">Your role: {{ team.role }}</p>
+
         <div v-if="team.role === 'admin'" class="flex gap-2">
             <EditTeamModal :team="team">
                 <Button variant="outline">Edit team</Button>
@@ -53,6 +58,48 @@ defineOptions({
                     Delete team
                 </Button>
             </Form>
+        </div>
+
+        <div class="mt-4 border-t pt-4">
+            <h2 class="mb-3 text-lg font-semibold">Today's stand-up</h2>
+
+            <div v-if="today_standup">
+                <Button as-child>
+                    <Link
+                        :href="ShowStandupController.url([team, today_standup])"
+                    >
+                        View stand-up
+                    </Link>
+                </Button>
+            </div>
+
+            <div v-else class="flex flex-col gap-3">
+                <p class="text-sm text-muted-foreground">
+                    No stand-up has been created for today yet.
+                </p>
+                <Form
+                    v-bind="StoreStandupController.form.post(team)"
+                    v-slot="{ processing }"
+                >
+                    <Button type="submit" :disabled="processing">
+                        Create stand-up
+                    </Button>
+                </Form>
+            </div>
+        </div>
+
+        <div v-if="previous_standups.length > 0" class="border-t pt-4">
+            <h2 class="mb-3 text-lg font-semibold">Previous stand-ups</h2>
+            <ul class="flex flex-col gap-1">
+                <li v-for="standup in previous_standups" :key="standup.id">
+                    <Link
+                        :href="ShowStandupController.url([team, standup])"
+                        class="text-sm hover:underline"
+                    >
+                        {{ standup.date }}
+                    </Link>
+                </li>
+            </ul>
         </div>
     </div>
 </template>

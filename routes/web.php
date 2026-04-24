@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Standups\ShowStandupController;
+use App\Http\Controllers\Standups\StoreStandupController;
+use App\Http\Controllers\Standups\StoreStandupNoteController;
 use App\Http\Controllers\Teams\DestroyTeamController;
 use App\Http\Controllers\Teams\ShowTeamController;
 use App\Http\Controllers\Teams\StoreTeamController;
@@ -19,6 +22,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('teams/{team}', ShowTeamController::class)->name('teams.show');
     Route::patch('teams/{team}', UpdateTeamController::class)->name('teams.update');
     Route::delete('teams/{team}', DestroyTeamController::class)->name('teams.destroy');
+
+    Route::post('teams/{team}/standups', StoreStandupController::class)->name('standups.store');
+    Route::get('teams/{team}/standups/{standup}', ShowStandupController::class)->name('standups.show');
+    Route::post('teams/{team}/standups/{standup}/notes', StoreStandupNoteController::class)->name('standup-notes.store');
 });
 
 require __DIR__.'/settings.php';

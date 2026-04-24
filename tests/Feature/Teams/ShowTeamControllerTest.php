@@ -3,6 +3,7 @@
 namespace Tests\Feature\Teams;
 
 use App\Models\Role;
+use App\Models\Standup;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,6 +38,55 @@ class ShowTeamControllerTest extends TestCase
             ->where('team.id', $team->id)
             ->where('team.name', $team->name)
             ->where('team.role', $role->name)
+        );
+    }
+
+    public function test_today_standup_is_null_when_none_exists(): void
+    {
+        $role = Role::factory()->member()->create();
+        $user = User::factory()->create();
+        $team = Team::factory()->create();
+        $user->teams()->attach($team, ['role_id' => $role->id]);
+
+        $response = $this->actingAs($user)->get(route('teams.show', $team));
+
+        $response->assertInertia(fn ($page) => $page
+            ->where('today_standup', null)
+            ->has('previous_standups', 0)
+        );
+    }
+
+    public function test_today_standup_is_returned_when_it_exists(): void
+    {
+        $role = Role::factory()->member()->create();
+        $user = User::factory()->create();
+        $team = Team::factory()->create();
+        $user->teams()->attach($team, ['role_id' => $role->id]);
+        $standup = Standup::factory()->today()->create(['team_id' => $team->id]);
+
+        $response = $this->actingAs($user)->get(route('teams.show', $team));
+
+        $response->assertInertia(fn ($page) => $page
+            ->where('today_standup.id', $standup->id)
+            ->where('today_standup.date', today()->toDateString())
+        );
+    }
+
+    public function test_previous_standups_are_returned_in_descending_date_order(): void
+    {
+        $role = Role::factory()->member()->create();
+        $user = User::factory()->create();
+        $team = Team::factory()->create();
+        $user->teams()->attach($team, ['role_id' => $role->id]);
+        $older = Standup::factory()->create(['team_id' => $team->id, 'date' => now()->subDays(2)->toDateString()]);
+        $newer = Standup::factory()->create(['team_id' => $team->id, 'date' => now()->subDay()->toDateString()]);
+
+        $response = $this->actingAs($user)->get(route('teams.show', $team));
+
+        $response->assertInertia(fn ($page) => $page
+            ->has('previous_standups', 2)
+            ->where('previous_standups.0.id', $newer->id)
+            ->where('previous_standups.1.id', $older->id)
         );
     }
 
