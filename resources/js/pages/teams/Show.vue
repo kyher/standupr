@@ -3,16 +3,23 @@ import { Form, Head, Link } from '@inertiajs/vue3';
 import StoreStandupController from '@/actions/App/Http/Controllers/Standups/StoreStandupController';
 import ShowStandupController from '@/actions/App/Http/Controllers/Standups/ShowStandupController';
 import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
+import StoreTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/StoreTeamInvitationController';
+import DestroyTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/DestroyTeamInvitationController';
 import EditTeamModal from '@/components/EditTeamModal.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { Standup, Team } from '@/types';
+import type { Standup, Team, TeamInvitation, TeamMember } from '@/types';
 
 defineProps<{
     team: Team;
     today_standup: Standup | null;
     previous_standups: Standup[];
+    members: TeamMember[];
+    pending_invitations: TeamInvitation[] | null;
 }>();
 
 defineOptions({
@@ -100,6 +107,80 @@ defineOptions({
                     </Link>
                 </li>
             </ul>
+        </div>
+
+        <div class="border-t pt-4">
+            <h2 class="mb-3 text-lg font-semibold">Members</h2>
+            <ul class="flex flex-col gap-1">
+                <li
+                    v-for="member in members"
+                    :key="member.id"
+                    class="flex items-center justify-between text-sm"
+                >
+                    <span>{{ member.name }}</span>
+                    <span class="text-muted-foreground">{{ member.role }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div v-if="team.role === 'admin'" class="border-t pt-4">
+            <h2 class="mb-3 text-lg font-semibold">Invite member</h2>
+            <Form
+                v-bind="StoreTeamInvitationController.form.post(team)"
+                :options="{ preserveScroll: true }"
+                class="flex gap-2"
+                v-slot="{ errors, processing }"
+                reset-on-success
+            >
+                <div class="flex flex-1 flex-col gap-1">
+                    <Label for="email" class="sr-only">Email address</Label>
+                    <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Email address"
+                        required
+                    />
+                    <InputError :message="errors.email" />
+                </div>
+                <Button type="submit" :disabled="processing">
+                    Send invite
+                </Button>
+            </Form>
+
+            <div
+                v-if="pending_invitations && pending_invitations.length > 0"
+                class="mt-4"
+            >
+                <h3 class="mb-2 text-sm font-medium">Pending invitations</h3>
+                <ul class="flex flex-col gap-2">
+                    <li
+                        v-for="invitation in pending_invitations"
+                        :key="invitation.id"
+                        class="flex items-center justify-between text-sm"
+                    >
+                        <div>
+                            <span>{{ invitation.user.name }}</span>
+                            <span class="ml-1 text-muted-foreground">
+                                ({{ invitation.user.email }})
+                            </span>
+                        </div>
+                        <Form
+                            v-bind="DestroyTeamInvitationController.form.delete({ team, invitation })"
+                            v-slot="{ processing }"
+                        >
+                            <Button
+                                type="submit"
+                                variant="ghost"
+                                size="sm"
+                                :disabled="processing"
+                            >
+                                Cancel
+                            </Button>
+                        </Form>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
