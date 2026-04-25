@@ -3,7 +3,6 @@ import { Form, Head } from '@inertiajs/vue3';
 import AcceptInvitationController from '@/actions/App/Http/Controllers/Invitations/AcceptInvitationController';
 import RejectInvitationController from '@/actions/App/Http/Controllers/Invitations/RejectInvitationController';
 import { Button } from '@/components/ui/button';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { PendingInvitation } from '@/types';
 
@@ -29,7 +28,9 @@ defineOptions({
 <template>
     <Head title="Invitations" />
 
-    <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+    <div
+        class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+    >
         <h1 class="text-2xl font-semibold">Invitations</h1>
 
         <div v-if="invitations.length === 0">
@@ -52,7 +53,9 @@ defineOptions({
                 </div>
                 <div class="flex gap-2">
                     <Form
-                        v-bind="AcceptInvitationController.form.post(invitation)"
+                        v-bind="
+                            AcceptInvitationController.form.post(invitation)
+                        "
                         v-slot="{ processing }"
                     >
                         <Button type="submit" :disabled="processing">
@@ -60,7 +63,9 @@ defineOptions({
                         </Button>
                     </Form>
                     <Form
-                        v-bind="RejectInvitationController.form.post(invitation)"
+                        v-bind="
+                            RejectInvitationController.form.post(invitation)
+                        "
                         v-slot="{ processing }"
                     >
                         <Button

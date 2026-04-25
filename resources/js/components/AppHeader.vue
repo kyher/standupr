@@ -2,6 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { LayoutGrid, Mail, Menu, Moon, Sun } from 'lucide-vue-next';
 import { computed } from 'vue';
+import IndexInvitationController from '@/actions/App/Http/Controllers/Invitations/IndexInvitationController';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
@@ -29,7 +30,6 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { useAppearance } from '@/composables/useAppearance';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
-import IndexInvitationController from '@/actions/App/Http/Controllers/Invitations/IndexInvitationController';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem, NavItem } from '@/types';
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
-import StoreStandupController from '@/actions/App/Http/Controllers/Standups/StoreStandupController';
 import ShowStandupController from '@/actions/App/Http/Controllers/Standups/ShowStandupController';
+import StoreStandupController from '@/actions/App/Http/Controllers/Standups/StoreStandupController';
 import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
-import StoreTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/StoreTeamInvitationController';
 import DestroyTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/DestroyTeamInvitationController';
+import StoreTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/StoreTeamInvitationController';
 import EditTeamModal from '@/components/EditTeamModal.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
