@@ -25,4 +25,9 @@ class Team extends Model
     {
         return $this->hasMany(Standup::class);
     }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(TeamInvitation::class);
+    }
 }

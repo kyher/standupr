@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { LayoutGrid, Menu, Moon, Sun } from 'lucide-vue-next';
+import { LayoutGrid, Mail, Menu, Moon, Sun } from 'lucide-vue-next';
 import { computed } from 'vue';
+import IndexInvitationController from '@/actions/App/Http/Controllers/Invitations/IndexInvitationController';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
@@ -42,6 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const page = usePage();
 const auth = computed(() => page.props.auth);
+const pendingInvitationsCount = computed(() => (page.props as Record<string, unknown>).pending_invitations_count as number);
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
 const { resolvedAppearance, updateAppearance } = useAppearance();
 
@@ -57,6 +59,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Invitations',
+        href: IndexInvitationController.url(),
+        icon: Mail,
     },
 ];
 </script>
@@ -147,6 +154,12 @@ const mainNavItems: NavItem[] = [
                                         class="mr-2 h-4 w-4"
                                     />
                                     {{ item.title }}
+                                    <span
+                                        v-if="item.title === 'Invitations' && pendingInvitationsCount > 0"
+                                        class="ml-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground"
+                                    >
+                                        {{ pendingInvitationsCount }}
+                                    </span>
                                 </Link>
                                 <div
                                     v-if="isCurrentUrl(item.href)"

@@ -2,11 +2,11 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import StoreStandupNoteController from '@/actions/App/Http/Controllers/Standups/StoreStandupNoteController';
+import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { Standup, StandupNote, Team } from '@/types';
-import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 
 const props = defineProps<{
     team: { id: string; name: string };
@@ -45,12 +45,15 @@ function submit() {
 
 const grouped = computed(() => {
     const map = new Map<number, { name: string; notes: StandupNote[] }>();
+
     for (const note of props.notes) {
         if (!map.has(note.user.id)) {
             map.set(note.user.id, { name: note.user.name, notes: [] });
         }
+
         map.get(note.user.id)!.notes.push(note);
     }
+
     return [...map.values()];
 });
 </script>

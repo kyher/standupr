@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Teams;
+namespace App\Http\Requests\Teams\Invitations;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTeamRequest extends FormRequest
+class StoreTeamInvitationRequest extends FormRequest
 {
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
@@ -13,7 +13,7 @@ class StoreTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'email' => ['required', 'email', 'exists:users,email'],
         ];
     }
 }

@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(StandupNote::class);
     }
+
+    public function receivedInvitations(): HasMany
+    {
+        return $this->hasMany(TeamInvitation::class);
+    }
 }
