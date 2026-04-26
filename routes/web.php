@@ -10,6 +10,7 @@ use App\Http\Controllers\Standups\StoreStandupNoteController;
 use App\Http\Controllers\Teams\DestroyTeamController;
 use App\Http\Controllers\Teams\Invitations\DestroyTeamInvitationController;
 use App\Http\Controllers\Teams\Invitations\StoreTeamInvitationController;
+use App\Http\Controllers\Teams\Settings\ShowTeamSettingsController;
 use App\Http\Controllers\Teams\ShowTeamController;
 use App\Http\Controllers\Teams\StoreTeamController;
 use App\Http\Controllers\Teams\UpdateTeamController;
@@ -25,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('teams', StoreTeamController::class)->name('teams.store');
     Route::get('teams/{team}', ShowTeamController::class)->name('teams.show');
+    Route::get('teams/{team}/settings', ShowTeamSettingsController::class)->name('team-settings.edit');
     Route::patch('teams/{team}', UpdateTeamController::class)->name('teams.update');
     Route::delete('teams/{team}', DestroyTeamController::class)->name('teams.destroy');
 
