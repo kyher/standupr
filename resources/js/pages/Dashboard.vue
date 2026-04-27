@@ -67,7 +67,7 @@ defineOptions({
                     </CardHeader>
                     <CardContent>
                         <p class="text-sm text-muted-foreground">
-                            Your role: {{ team.role }}
+                            Your role: <span class="capitalize">{{ team.role }}</span>
                         </p>
                     </CardContent>
                 </Card>

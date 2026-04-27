@@ -85,7 +85,7 @@ defineOptions({
                     class="flex items-center justify-between text-sm"
                 >
                     <span>{{ member.name }}</span>
-                    <span class="text-muted-foreground">{{ member.role }}</span>
+                    <span class="capitalize text-muted-foreground">{{ member.role }}</span>
                 </li>
             </ul>
         </div>
