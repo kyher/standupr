@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Teams;
+namespace Tests\Feature\Teams;
 
 use App\Actions\Teams\UpdateTeam;
 use App\Models\Team;

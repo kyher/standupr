@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Teams;
+namespace Tests\Feature\Teams;
 
 use App\Actions\Teams\StoreTeam;
 use App\Models\Role;

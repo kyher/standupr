@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Teams\Invitations;
+namespace Tests\Feature\Teams\Invitations;
 
 use App\Actions\Teams\Invitations\RejectTeamInvitation;
 use App\Enums\InvitationStatus;
