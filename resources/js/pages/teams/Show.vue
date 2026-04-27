@@ -42,7 +42,7 @@ defineOptions({
             <div>
                 <h1 class="text-2xl font-semibold">{{ team.name }}</h1>
                 <p class="text-sm text-muted-foreground">
-                    Your role: {{ team.role }}
+                    Your role: <span class="capitalize">{{ team.role }}</span>
                 </p>
             </div>
             <Button v-if="team.role === 'admin'" variant="outline" as-child>

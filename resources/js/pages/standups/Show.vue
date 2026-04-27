@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
+import { Trash2Icon } from 'lucide-vue-next';
 import { computed } from 'vue';
+import DestroyStandupNoteController from '@/actions/App/Http/Controllers/Standups/DestroyStandupNoteController';
 import StoreStandupNoteController from '@/actions/App/Http/Controllers/Standups/StoreStandupNoteController';
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 import { Button } from '@/components/ui/button';
@@ -34,6 +36,9 @@ defineOptions({
         },
     ],
 });
+
+const page = usePage();
+const currentUserId = computed(() => page.props.auth.user.id);
 
 const form = useForm({ body: '' });
 
@@ -87,9 +92,17 @@ const grouped = computed(() => {
                     <li
                         v-for="note in member.notes"
                         :key="note.id"
-                        class="rounded-md border p-3 text-sm"
+                        class="flex items-start justify-between gap-2 rounded-md border p-3 text-sm"
                     >
-                        {{ note.body }}
+                        <span>{{ note.body }}</span>
+                        <button
+                            v-if="note.user.id === currentUserId"
+                            type="button"
+                            class="shrink-0 cursor-pointer text-muted-foreground hover:text-destructive"
+                            @click="router.delete(DestroyStandupNoteController.url([team, standup, note]))"
+                        >
+                            <Trash2Icon class="size-4" />
+                        </button>
                     </li>
                 </ul>
             </div>

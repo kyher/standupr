@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Invitations\AcceptInvitationController;
 use App\Http\Controllers\Invitations\IndexInvitationController;
 use App\Http\Controllers\Invitations\RejectInvitationController;
+use App\Http\Controllers\Standups\DestroyStandupNoteController;
 use App\Http\Controllers\Standups\ShowStandupController;
 use App\Http\Controllers\Standups\StoreStandupController;
 use App\Http\Controllers\Standups\StoreStandupNoteController;
@@ -40,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('teams/{team}/standups', StoreStandupController::class)->name('standups.store');
     Route::get('teams/{team}/standups/{standup}', ShowStandupController::class)->name('standups.show');
     Route::post('teams/{team}/standups/{standup}/notes', StoreStandupNoteController::class)->name('standup-notes.store');
+    Route::delete('teams/{team}/standups/{standup}/notes/{note}', DestroyStandupNoteController::class)->name('standup-notes.destroy');
 });
 
 require __DIR__.'/settings.php';
