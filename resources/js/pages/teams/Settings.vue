@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
 import DestroyTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/DestroyTeamInvitationController';
 import StoreTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/StoreTeamInvitationController';
@@ -8,11 +9,23 @@ import UpdateTeamController from '@/actions/App/Http/Controllers/Teams/UpdateTea
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { Team, TeamInvitation, TeamMember } from '@/types';
+
+const confirmTeamName = ref('');
 
 defineProps<{
     team: Team;
@@ -175,19 +188,67 @@ defineOptions({
                         Please proceed with caution, this cannot be undone.
                     </p>
                 </div>
-                <Form
-                    :action="DestroyTeamController.url(team)"
-                    method="delete"
-                    v-slot="{ processing }"
+                <Dialog
+                    @update:open="(open) => !open && (confirmTeamName = '')"
                 >
-                    <Button
-                        type="submit"
-                        variant="destructive"
-                        :disabled="processing"
-                    >
-                        Delete team
-                    </Button>
-                </Form>
+                    <DialogTrigger as-child>
+                        <Button variant="destructive">Delete team</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <Form
+                            :action="DestroyTeamController.url(team)"
+                            method="delete"
+                            v-slot="{ processing }"
+                            class="space-y-6"
+                        >
+                            <DialogHeader class="space-y-3">
+                                <DialogTitle
+                                    >Are you sure you want to delete this
+                                    team?</DialogTitle
+                                >
+                                <DialogDescription>
+                                    This action cannot be undone. All team data
+                                    will be permanently deleted. Please type
+                                    <strong>{{ team.name }}</strong> to confirm.
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <div class="grid gap-2">
+                                <Label for="confirm-team-name"
+                                    >Team name</Label
+                                >
+                                <Input
+                                    id="confirm-team-name"
+                                    v-model="confirmTeamName"
+                                    placeholder="Enter team name"
+                                    autocomplete="off"
+                                />
+                            </div>
+
+                            <DialogFooter class="gap-2">
+                                <DialogClose as-child>
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        @click="confirmTeamName = ''"
+                                    >
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
+                                <Button
+                                    type="submit"
+                                    variant="destructive"
+                                    :disabled="
+                                        processing ||
+                                        confirmTeamName !== team.name
+                                    "
+                                >
+                                    Delete team
+                                </Button>
+                            </DialogFooter>
+                        </Form>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     </div>
