@@ -6,7 +6,6 @@ import DestroyTeamInvitationController from '@/actions/App/Http/Controllers/Team
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 import Heading from '@/components/Heading.vue';
 import InviteTeamMember from '@/components/InviteTeamMember.vue';
-import UpdateTeamName from '@/components/UpdateTeamName.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -20,6 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import UpdateTeamName from '@/components/UpdateTeamName.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { Team, TeamInvitation, TeamMember } from '@/types';
