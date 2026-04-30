@@ -3,11 +3,10 @@ import { Form, Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import DestroyTeamController from '@/actions/App/Http/Controllers/Teams/DestroyTeamController';
 import DestroyTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/DestroyTeamInvitationController';
-import StoreTeamInvitationController from '@/actions/App/Http/Controllers/Teams/Invitations/StoreTeamInvitationController';
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
-import UpdateTeamController from '@/actions/App/Http/Controllers/Teams/UpdateTeamController';
 import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
+import InviteTeamMember from '@/components/InviteTeamMember.vue';
+import UpdateTeamName from '@/components/UpdateTeamName.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -64,29 +63,13 @@ defineOptions({
         <div class="my-4 flex flex-col space-y-4">
             <Heading
                 variant="small"
-                title="Team name"
-                description="Update your team's display name"
+                title="Update team"
+                description="Manage your team's name and membership"
             />
-            <Form
-                :action="UpdateTeamController.url(team)"
-                method="patch"
-                :options="{ preserveScroll: true }"
-                class="flex gap-2"
-                v-slot="{ errors, processing }"
-            >
-                <div class="flex flex-1 flex-col gap-1">
-                    <Label for="name" class="sr-only">Team name</Label>
-                    <Input
-                        id="name"
-                        name="name"
-                        :default-value="team.name"
-                        placeholder="Team name"
-                        required
-                    />
-                    <InputError :message="errors.name" />
-                </div>
-                <Button type="submit" :disabled="processing">Save</Button>
-            </Form>
+            <div class="flex gap-2">
+                <UpdateTeamName :team="team" />
+                <InviteTeamMember :team="team" />
+            </div>
         </div>
 
         <div class="flex flex-col space-y-4 border-t pt-6">
@@ -101,37 +84,6 @@ defineOptions({
                     <span class="capitalize text-muted-foreground">{{ member.role }}</span>
                 </li>
             </ul>
-        </div>
-
-        <div class="flex flex-col space-y-4 border-t pt-6">
-            <Heading
-                variant="small"
-                title="Invite member"
-                description="Invite a new member to the team by email"
-            />
-            <Form
-                :action="StoreTeamInvitationController.url(team)"
-                method="post"
-                :options="{ preserveScroll: true }"
-                class="flex gap-2"
-                v-slot="{ errors, processing }"
-                reset-on-success
-            >
-                <div class="flex flex-1 flex-col gap-1">
-                    <Label for="email" class="sr-only">Email address</Label>
-                    <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="Email address"
-                        required
-                    />
-                    <InputError :message="errors.email" />
-                </div>
-                <Button type="submit" :disabled="processing"
-                    >Send invite</Button
-                >
-            </Form>
 
             <div v-if="pending_invitations.length > 0">
                 <h3 class="mb-2 text-sm font-medium">Pending invitations</h3>
