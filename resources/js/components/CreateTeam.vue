@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import StoreTeamController from '@/actions/App/Http/Controllers/Teams/StoreTeamController';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
