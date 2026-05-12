@@ -90,6 +90,46 @@ class StoreStandupNoteControllerTest extends TestCase
         $this->assertDatabaseEmpty('standup_notes');
     }
 
+    public function test_note_can_be_flagged_as_a_blocker(): void
+    {
+        $role = Role::factory()->member()->create();
+        $user = User::factory()->create();
+        $team = Team::factory()->create();
+        $user->teams()->attach($team, ['role_id' => $role->id]);
+        $standup = Standup::factory()->today()->create(['team_id' => $team->id]);
+
+        $this->actingAs($user)->post(
+            route('standup-notes.store', [$team, $standup]),
+            ['body' => 'Blocked on API access', 'has_blocker' => true],
+        );
+
+        $this->assertDatabaseHas('standup_notes', [
+            'standup_id' => $standup->id,
+            'body' => 'Blocked on API access',
+            'has_blocker' => true,
+        ]);
+    }
+
+    public function test_note_has_no_blocker_by_default(): void
+    {
+        $role = Role::factory()->member()->create();
+        $user = User::factory()->create();
+        $team = Team::factory()->create();
+        $user->teams()->attach($team, ['role_id' => $role->id]);
+        $standup = Standup::factory()->today()->create(['team_id' => $team->id]);
+
+        $this->actingAs($user)->post(
+            route('standup-notes.store', [$team, $standup]),
+            ['body' => 'Regular update'],
+        );
+
+        $this->assertDatabaseHas('standup_notes', [
+            'standup_id' => $standup->id,
+            'body' => 'Regular update',
+            'has_blocker' => false,
+        ]);
+    }
+
     public function test_body_must_not_exceed_10000_characters(): void
     {
         $role = Role::factory()->member()->create();
