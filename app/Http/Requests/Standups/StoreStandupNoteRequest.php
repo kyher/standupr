@@ -10,6 +10,7 @@ class StoreStandupNoteRequest extends FormRequest
     {
         return [
             'body' => ['required', 'string', 'max:10000'],
+            'has_blocker' => ['sometimes', 'boolean'],
         ];
     }
 }

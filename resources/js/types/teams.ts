@@ -44,6 +44,7 @@ export type Standup = {
 export type StandupNote = {
     id: string;
     body: string;
+    has_blocker: boolean;
     user: {
         id: number;
         name: string;

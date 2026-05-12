@@ -12,6 +12,7 @@ class StandupNoteResource extends JsonResource
         return [
             'id' => $this->id,
             'body' => $this->body,
+            'has_blocker' => $this->has_blocker,
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,

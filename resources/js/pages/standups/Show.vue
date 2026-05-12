@@ -5,7 +5,9 @@ import { computed } from 'vue';
 import DestroyStandupNoteController from '@/actions/App/Http/Controllers/Standups/DestroyStandupNoteController';
 import StoreStandupNoteController from '@/actions/App/Http/Controllers/Standups/StoreStandupNoteController';
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { Standup, StandupNote, Team } from '@/types';
@@ -40,7 +42,7 @@ defineOptions({
 const page = usePage();
 const currentUserId = computed(() => page.props.auth.user.id);
 
-const form = useForm({ body: '' });
+const form = useForm({ body: '', has_blocker: false });
 
 function submit() {
     form.post(StoreStandupNoteController.url([props.team, props.standup]), {
@@ -93,13 +95,34 @@ const grouped = computed(() => {
                         v-for="note in member.notes"
                         :key="note.id"
                         class="flex items-start justify-between gap-2 rounded-md border p-3 text-sm"
+                        :class="
+                            note.has_blocker
+                                ? 'border-destructive/50 bg-destructive/5'
+                                : ''
+                        "
                     >
-                        <span>{{ note.body }}</span>
+                        <div class="flex flex-col gap-1.5">
+                            <span>{{ note.body }}</span>
+                            <Badge
+                                v-if="note.has_blocker"
+                                variant="destructive"
+                            >
+                                Blocker
+                            </Badge>
+                        </div>
                         <button
                             v-if="note.user.id === currentUserId"
                             type="button"
                             class="shrink-0 cursor-pointer text-muted-foreground hover:text-destructive"
-                            @click="router.delete(DestroyStandupNoteController.url([team, standup, note]))"
+                            @click="
+                                router.delete(
+                                    DestroyStandupNoteController.url([
+                                        team,
+                                        standup,
+                                        note,
+                                    ]),
+                                )
+                            "
                         >
                             <Trash2Icon class="size-4" />
                         </button>
@@ -120,6 +143,15 @@ const grouped = computed(() => {
                 <p v-if="form.errors.body" class="text-sm text-destructive">
                     {{ form.errors.body }}
                 </p>
+                <div class="flex items-center gap-2">
+                    <Checkbox id="has_blocker" v-model="form.has_blocker" />
+                    <label
+                        for="has_blocker"
+                        class="cursor-pointer text-sm select-none"
+                    >
+                        Blocker
+                    </label>
+                </div>
                 <div>
                     <Button type="submit" :disabled="form.processing">
                         Add note

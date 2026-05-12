@@ -19,6 +19,7 @@ class StoreStandupNoteController extends Controller
         $standup->notes()->create([
             'user_id' => $request->user()->id,
             'body' => $request->validated('body'),
+            'has_blocker' => $request->boolean('has_blocker'),
         ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Note added.')]);
