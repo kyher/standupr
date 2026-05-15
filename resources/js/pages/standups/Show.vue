@@ -7,7 +7,7 @@ import StoreStandupNoteController from '@/actions/App/Http/Controllers/Standups/
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { useBlockerTag } from '@/composables/useBlockerTag';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { Standup, StandupNote, Team } from '@/types';
@@ -44,9 +44,21 @@ const currentUserId = computed(() => page.props.auth.user.id);
 
 const form = useForm({ body: '', has_blocker: false });
 
+const textarea = ref<HTMLTextAreaElement | null>(null);
+const body = computed({
+    get: () => form.body,
+    set: (v) => { form.body = v; },
+});
+
+const { hasBlocker, showHint: showBlockerHint, updateHint, handleTab } = useBlockerTag(body, textarea);
+
 function submit() {
+    form.has_blocker = hasBlocker.value;
     form.post(StoreStandupNoteController.url([props.team, props.standup]), {
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            showBlockerHint.value = false;
+        },
     });
 }
 
@@ -96,7 +108,11 @@ const grouped = computed(() => {
                 v-if="grouped.length === 0"
                 class="text-sm text-muted-foreground"
             >
-                {{ filterBlockers ? 'No blockers today.' : 'No notes yet. Be the first to add one!' }}
+                {{
+                    filterBlockers
+                        ? 'No blockers today.'
+                        : 'No notes yet. Be the first to add one!'
+                }}
             </div>
 
             <div
@@ -150,23 +166,36 @@ const grouped = computed(() => {
             <h2 class="mb-3 font-semibold">Add your update</h2>
             <form class="flex flex-col gap-3" @submit.prevent="submit">
                 <textarea
+                    ref="textarea"
                     v-model="form.body"
                     placeholder="What are you working on?"
                     rows="3"
                     class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                    @input="updateHint"
+                    @click="updateHint"
+                    @keyup="updateHint"
+                    @keydown.tab="handleTab"
                 />
                 <p v-if="form.errors.body" class="text-sm text-destructive">
                     {{ form.errors.body }}
                 </p>
-                <div class="flex items-center gap-2">
-                    <Checkbox id="has_blocker" v-model="form.has_blocker" />
-                    <label
-                        for="has_blocker"
-                        class="cursor-pointer text-sm select-none"
+                <Badge
+                    v-if="hasBlocker"
+                    variant="destructive"
+                    class="self-start"
+                >
+                    Blocker identified
+                </Badge>
+                <p class="text-sm text-muted-foreground">
+                    Type #blocker anywhere in your note to flag it as a blocker
+                    <span v-if="showBlockerHint" class="ml-1 text-foreground"
+                        >— press
+                        <kbd class="rounded border px-1 font-mono text-xs"
+                            >Tab</kbd
+                        >
+                        to complete</span
                     >
-                        Blocker
-                    </label>
-                </div>
+                </p>
                 <div>
                     <Button type="submit" :disabled="form.processing">
                         Add note
