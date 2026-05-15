@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { Trash2Icon } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import DestroyStandupNoteController from '@/actions/App/Http/Controllers/Standups/DestroyStandupNoteController';
 import StoreStandupNoteController from '@/actions/App/Http/Controllers/Standups/StoreStandupNoteController';
 import ShowTeamController from '@/actions/App/Http/Controllers/Teams/ShowTeamController';
@@ -50,10 +50,14 @@ function submit() {
     });
 }
 
+const filterBlockers = ref(false);
+
 const grouped = computed(() => {
     const map = new Map<number, { name: string; notes: StandupNote[] }>();
 
     for (const note of props.notes) {
+        if (filterBlockers.value && !note.has_blocker) continue;
+
         if (!map.has(note.user.id)) {
             map.set(note.user.id, { name: note.user.name, notes: [] });
         }
@@ -77,11 +81,22 @@ const grouped = computed(() => {
         </div>
 
         <div class="flex flex-col gap-6">
+            <div class="flex items-center gap-2">
+                <Button
+                    type="button"
+                    :variant="filterBlockers ? 'destructive' : 'outline'"
+                    size="sm"
+                    @click="filterBlockers = !filterBlockers"
+                >
+                    Blockers only
+                </Button>
+            </div>
+
             <div
                 v-if="grouped.length === 0"
                 class="text-sm text-muted-foreground"
             >
-                No notes yet. Be the first to add one!
+                {{ filterBlockers ? 'No blockers today.' : 'No notes yet. Be the first to add one!' }}
             </div>
 
             <div
