@@ -47,7 +47,9 @@ const form = useForm({ body: '', has_blocker: false });
 const textarea = ref<HTMLTextAreaElement | null>(null);
 const body = computed({
     get: () => form.body,
-    set: (v) => { form.body = v; },
+    set: (v) => {
+ form.body = v; 
+},
 });
 
 const { hasBlocker, showHint: showBlockerHint, updateHint, handleTab } = useBlockerTag(body, textarea);
@@ -68,7 +70,9 @@ const grouped = computed(() => {
     const map = new Map<number, { name: string; notes: StandupNote[] }>();
 
     for (const note of props.notes) {
-        if (filterBlockers.value && !note.has_blocker) continue;
+        if (filterBlockers.value && !note.has_blocker) {
+continue;
+}
 
         if (!map.has(note.user.id)) {
             map.set(note.user.id, { name: note.user.name, notes: [] });

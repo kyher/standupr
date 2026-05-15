@@ -1,5 +1,5 @@
-import { nextTick, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
+import { nextTick, ref } from 'vue';
 import { useBlockerTag } from './useBlockerTag';
 
 function makeTextarea(text: string, cursor: number) {
@@ -13,6 +13,7 @@ function setup(text: string, cursor?: number) {
     const body = ref(text);
     const textarea = makeTextarea(text, cursor ?? text.length);
     const composable = useBlockerTag(body, textarea);
+
     return { body, textarea, ...composable };
 }
 

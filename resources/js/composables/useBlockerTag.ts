@@ -1,4 +1,5 @@
-import { computed, nextTick, ref, type Ref } from 'vue';
+import { computed, nextTick, ref  } from 'vue';
+import type {Ref} from 'vue';
 
 const BLOCKER = '#blocker';
 const BLOCKER_RE = /(?<!\S)#blocker/i;
@@ -10,13 +11,24 @@ export function useBlockerTag(body: Ref<string>, textarea: Ref<HTMLTextAreaEleme
     const hasBlocker = computed(() => BLOCKER_RE.test(body.value));
 
     function getActiveToken(): { start: number; end: number } | null {
-        if (!textarea.value) return null;
+        if (!textarea.value) {
+return null;
+}
+
         const cursor = textarea.value.selectionStart ?? body.value.length;
         const before = body.value.slice(0, cursor);
         const match = before.match(WORD_AT_CURSOR_RE);
-        if (!match) return null;
+
+        if (!match) {
+return null;
+}
+
         const word = match[0].toLowerCase();
-        if (!BLOCKER.startsWith(word) || word === BLOCKER || word.length < 3) return null;
+
+        if (!BLOCKER.startsWith(word) || word === BLOCKER || word.length < 3) {
+return null;
+}
+
         return { start: before.length - match[0].length, end: cursor };
     }
 
@@ -26,7 +38,11 @@ export function useBlockerTag(body: Ref<string>, textarea: Ref<HTMLTextAreaEleme
 
     function handleTab(e: KeyboardEvent) {
         const token = getActiveToken();
-        if (!token) return;
+
+        if (!token) {
+return;
+}
+
         e.preventDefault();
         body.value = body.value.slice(0, token.start) + BLOCKER + body.value.slice(token.end);
         nextTick(() => {
