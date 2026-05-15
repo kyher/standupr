@@ -15,6 +15,23 @@ on:
       - workos
 
 jobs:
+  js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Install Node Dependencies
+        run: npm i
+
+      - name: Run Vitest
+        run: npm test -- --run
+
   ci:
     runs-on: ubuntu-latest
     strategy:
